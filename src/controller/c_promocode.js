@@ -8,6 +8,7 @@ const {
 const redis = require("redis");
 const client = redis.createClient();
 const helper = require("../helper/response");
+const fs = require("fs");
 
 module.exports = {
   getPromocode: async (req, res) => {
@@ -45,6 +46,7 @@ module.exports = {
       } else {
         const setData = {
           promocode_name,
+          promocode_image: req.file === undefined ? "" : req.file.filename,
           promocode_discount,
           promocode_updated_at: new Date(),
           promocode_status,
@@ -60,6 +62,13 @@ module.exports = {
   patchPromocode: async (req, res) => {
     try {
       const { id } = req.params;
+      const getName = await getPromocodeByIdModel(id);
+      const name = getName[0].promocode_image;
+      fs.unlink(`./upload/promocode/${name}`, function (err) {
+        if (err) {
+          console.log("Error while deleting the file" + err);
+        }
+      });
       const { promocode_name, promocode_status, promocode_discount } = req.body;
       if (
         promocode_name == null ||
@@ -70,6 +79,7 @@ module.exports = {
       } else {
         const setData = {
           promocode_name,
+          promocode_image: req.file === undefined ? "" : req.file.filename,
           promocode_discount,
           promocode_created_at: new Date(),
           promocode_status,
@@ -90,6 +100,13 @@ module.exports = {
   deletePromocode: async (req, res) => {
     try {
       const { id } = req.params;
+      const getName = await getPromocodeByIdModel(id);
+      const name = getName[0].promocode_image;
+      fs.unlink(`./upload/promocode/${name}`, function (err) {
+        if (err) {
+          console.log("Error while deleting the file" + err);
+        }
+      });
       const result = await deletePromocodeModel(id);
       if (result.length == null) {
         return helper.response(

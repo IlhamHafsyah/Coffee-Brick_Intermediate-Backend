@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const uploadImage = require("../middleware/multerpromo");
+const { authorization, authentication } = require("../middleware/auth");
 const {
   getPromocode,
   getPromocodeById,
@@ -12,10 +14,30 @@ const {
   clearDataPromocodeRedis,
 } = require("../middleware/redis");
 
-router.get("/", getPromocodeRedis, getPromocode);
-router.get("/:id", getPromocodeByIdRedis, getPromocodeById);
-router.post("/", clearDataPromocodeRedis, postPromocode);
-router.patch("/:id", clearDataPromocodeRedis, patchPromocode);
-router.delete("/:id", clearDataPromocodeRedis, deletePromocode);
+router.get("/", authorization, getPromocodeRedis, getPromocode);
+router.get("/:id", authorization, getPromocodeByIdRedis, getPromocodeById);
+router.post(
+  "/",
+  authorization,
+  authentication,
+  clearDataPromocodeRedis,
+  uploadImage,
+  postPromocode
+);
+router.patch(
+  "/:id",
+  authorization,
+  authentication,
+  clearDataPromocodeRedis,
+  uploadImage,
+  patchPromocode
+);
+router.delete(
+  "/:id",
+  authorization,
+  authentication,
+  clearDataPromocodeRedis,
+  deletePromocode
+);
 
 module.exports = router;

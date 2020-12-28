@@ -147,7 +147,7 @@ module.exports = {
       const { id } = request.params;
       const getName = await getProductByIdModel(id);
       const name = getName[0].product_image;
-      fs.unlink(`./upload/${name}`, function (err) {
+      fs.unlink(`./upload/product/${name}`, function (err) {
         if (err) {
           console.log("Error while deleting the file" + err);
         }
@@ -217,7 +217,7 @@ module.exports = {
       const { id } = req.params;
       const getName = await getProductByIdModel(id);
       const name = getName[0].product_image;
-      fs.unlink(`./upload/${name}`, function (err) {
+      fs.unlink(`./upload/product/${name}`, function (err) {
         if (err) {
           console.log("Error while deleting the file" + err);
         }

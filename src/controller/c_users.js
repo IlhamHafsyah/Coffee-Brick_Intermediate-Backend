@@ -1,4 +1,6 @@
 const bcrypt = require("bcrypt");
+const redis = require("redis");
+const client = redis.createClient();
 const helper = require("../helper/response");
 const jwt = require("jsonwebtoken");
 const {
@@ -9,6 +11,7 @@ const {
   patchUsersModel,
   deleteUsersModel,
 } = require("../model/m_users");
+const fs = require("fs");
 
 module.exports = {
   registerUsers: async (req, res) => {
@@ -31,6 +34,7 @@ module.exports = {
       const setData = {
         users_name,
         users_email,
+        profile_picture: req.file === undefined ? "" : req.file.filename,
         users_role,
         users_phone,
         display_name,
@@ -46,6 +50,7 @@ module.exports = {
       const result = await registerUsersModel(setData);
       return helper.response(res, 200, "Success register Users", result);
     } catch (error) {
+      console.log(error);
       return helper.response(res, 400, "Bad Request", error);
     }
   },
@@ -93,9 +98,10 @@ module.exports = {
   getUsers: async (req, res) => {
     try {
       const result = await getUsersModel();
-      // client.setex(`getpromocode`, 3600, JSON.stringify(result));
+      client.setex(`getusers`, 3600, JSON.stringify(result));
       return helper.response(res, 200, "Success Get Users Data", result);
     } catch (error) {
+      console.log(error);
       return helper.response(res, 400, "Bad Request", error);
     }
   },
@@ -104,6 +110,7 @@ module.exports = {
       const { id } = req.params;
       const result = await getUsersByIdModel(id);
       if (result.length > 0) {
+        client.setex(`getusersbyid:${id}`, 3600, JSON.stringify(result));
         return helper.response(res, 200, "Success Get Users By Id", result);
       } else {
         return helper.response(res, 404, `Users By Id : ${id} Not Found`);
@@ -116,11 +123,17 @@ module.exports = {
   patchUsers: async (req, res) => {
     try {
       const { id } = req.params;
+      const getName = await getUsersByIdModel(id);
+      const name = getName[0].profile_picture;
+      fs.unlink(`./upload/profile/${name}`, function (err) {
+        if (err) {
+          console.log("Error while deleting the file" + err);
+        }
+      });
       const {
         users_name,
         users_email,
         users_password,
-        profile_picture,
         users_phone,
         delivery_address,
         display_name,
@@ -131,12 +144,14 @@ module.exports = {
         users_role,
         status,
       } = req.body;
-      console.log(req.body);
+      const salt = bcrypt.genSaltSync(10);
+      const encryptPassword = bcrypt.hashSync(users_password, salt);
+      // console.log(req.body);
+      // console.log(req.file.filename);
       if (
         users_name == null ||
         users_email == null ||
         users_password == null ||
-        profile_picture == null ||
         users_phone == null ||
         delivery_address == null ||
         display_name == null ||
@@ -152,7 +167,7 @@ module.exports = {
         const setData = {
           users_name,
           users_email,
-          users_password,
+          users_password: encryptPassword,
           profile_picture: req.file === undefined ? "" : req.file.filename,
           users_phone,
           delivery_address,
@@ -165,22 +180,31 @@ module.exports = {
           status,
           users_updated_at: new Date(),
         };
+        console.log(setData);
         const checkId = await getUsersByIdModel(id);
         if (checkId.length > 0) {
           // proses update data
           const result = await patchUsersModel(setData, id);
-          return helper.response(res, 200, "Success Patch Product", result);
+          return helper.response(res, 200, "Success Patch User Data", result);
         } else {
           return helper.response(res, 404, `Product By Id : ${id} Not Found`);
         }
       }
     } catch (error) {
+      console.log(error);
       return helper.response(res, 400, "Bad Request", error);
     }
   },
   deleteUsers: async (req, res) => {
     try {
       const { id } = req.params;
+      const getName = await getUsersByIdModel(id);
+      const name = getName[0].profile_picture;
+      fs.unlink(`./upload/profile/${name}`, function (err) {
+        if (err) {
+          console.log("Error while deleting the file" + err);
+        }
+      });
       const result = await deleteUsersModel(id);
       if (result.length == null) {
         return helper.response(

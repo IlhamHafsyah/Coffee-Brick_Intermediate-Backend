@@ -65,7 +65,7 @@ module.exports = {
     });
   },
   getPromocodeRedis: (req, res, next) => {
-    client.get(`getpromocode`, (error, result) => {
+    client.get("getpromocode", (error, result) => {
       if (!error && result != null) {
         console.log("data ada di dalam redis");
         return helper.response(
@@ -126,6 +126,49 @@ module.exports = {
   },
   clearDataHistoryRedis: (req, res, next) => {
     client.keys("gethistory*", (_error, result) => {
+      if (result.length > 0) {
+        result.forEach((value) => {
+          client.del(value);
+        });
+      }
+      next();
+    });
+  },
+  getUsersRedis: (req, res, next) => {
+    client.get("getusers", (error, result) => {
+      if (!error && result != null) {
+        console.log("data ada di dalam redis");
+        return helper.response(
+          res,
+          200,
+          "Success Get Promocode",
+          JSON.parse(result)
+        );
+      } else {
+        console.log("data tidak ada di dalam redis");
+        next();
+      }
+    });
+  },
+  getUsersByIdRedis: (req, res, next) => {
+    const { id } = req.params;
+    client.get(`getusersbyid:${id}`, (error, result) => {
+      if (!error && result != null) {
+        console.log("data ada di dalam redis");
+        return helper.response(
+          res,
+          200,
+          "Success Get Promocode",
+          JSON.parse(result)
+        );
+      } else {
+        console.log("data tidak ada di dalam redis");
+        next();
+      }
+    });
+  },
+  ClearDataUsersRedis: (req, res, next) => {
+    client.keys("getusers*", (error, result) => {
       if (result.length > 0) {
         result.forEach((value) => {
           client.del(value);

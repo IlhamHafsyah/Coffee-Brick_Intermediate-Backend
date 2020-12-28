@@ -1,4 +1,6 @@
 const router = require("express").Router();
+const uploadImage = require("../middleware/multerprofile");
+const { authorization } = require("../middleware/auth");
 const {
   registerUsers,
   loginUsers,
@@ -7,12 +9,23 @@ const {
   patchUsers,
   deleteUsers,
 } = require("../controller/c_users");
+const {
+  getUsersRedis,
+  getUsersByIdRedis,
+  ClearDataUsersRedis,
+} = require("../middleware/redis");
 
-router.get("/", getUsers);
-router.get("/:id", getUsersById);
-router.post("/register", registerUsers);
+router.get("/", authorization, getUsersRedis, getUsers);
+router.get("/:id", authorization, getUsersByIdRedis, getUsersById);
+router.post("/register", uploadImage, registerUsers);
 router.post("/login", loginUsers);
-router.patch("/:id", patchUsers);
-router.delete("/:id", deleteUsers);
+router.patch(
+  "/:id",
+  authorization,
+  ClearDataUsersRedis,
+  uploadImage,
+  patchUsers
+);
+router.delete("/:id", authorization, ClearDataUsersRedis, deleteUsers);
 
 module.exports = router;
