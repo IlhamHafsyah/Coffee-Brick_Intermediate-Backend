@@ -3,6 +3,7 @@ const {
   postHistoryModel,
   postDetailhistoryModel,
   deleteHistoryModel,
+  patchHistoryModel,
 } = require("../model/m_history");
 const redis = require("redis");
 const client = redis.createClient();
@@ -75,6 +76,29 @@ module.exports = {
       return helper.response(res, 200, "Success Post Detail History", result);
     } catch (error) {
       console.log(error);
+      return helper.response(res, 400, "Bad Request", error);
+    }
+  },
+  patchHistory: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const { status } = req.body;
+      if (status == null) {
+        console.log("All data must be filled in");
+      } else {
+        const setData = {
+          status,
+        };
+        const checkId = await getHistoryModel(id);
+        if (checkId.length > 0) {
+          // proses update data
+          const result = await patchHistoryModel(setData, id);
+          return helper.response(res, 200, "Success Patch Product", result);
+        } else {
+          return helper.response(res, 404, `Product By Id : ${id} Not Found`);
+        }
+      }
+    } catch (error) {
       return helper.response(res, 400, "Bad Request", error);
     }
   },
