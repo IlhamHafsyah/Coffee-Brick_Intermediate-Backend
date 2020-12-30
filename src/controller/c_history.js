@@ -1,5 +1,6 @@
 const {
   getHistoryModel,
+  getDetailhistoryModel,
   postHistoryModel,
   postDetailhistoryModel,
   deleteHistoryModel,
@@ -23,6 +24,34 @@ module.exports = {
         return helper.response(res, 404, `History By Id : ${id} Not Found`);
       }
     } catch (error) {
+      return helper.response(res, 400, "Bad Request", error);
+    }
+  },
+  getDetailhistory: async (req, res) => {
+    try {
+      const { id } = req.params;
+      const result = await getDetailhistoryModel(id);
+      if (result.length > 0) {
+        client.setex(
+          `getdetailhistorybyid:${id}`,
+          3600,
+          JSON.stringify(result)
+        );
+        return helper.response(
+          res,
+          200,
+          "Success Get detailhistory By Id",
+          result
+        );
+      } else {
+        return helper.response(
+          res,
+          404,
+          `detailhistory By Id : ${id} Not Found`
+        );
+      }
+    } catch (error) {
+      console.log(error);
       return helper.response(res, 400, "Bad Request", error);
     }
   },

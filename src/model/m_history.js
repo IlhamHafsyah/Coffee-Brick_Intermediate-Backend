@@ -12,6 +12,16 @@ module.exports = {
       );
     });
   },
+  getDetailhistoryModel: (id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT product.product_name, detailhistory.qty, detailhistory.subtotal FROM detailhistory JOIN product ON detailhistory.product_id = product.product_id WHERE history_id = ${id}`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error));
+        }
+      );
+    });
+  },
   postHistoryModel: (setData) => {
     return new Promise((resolve, reject) => {
       connection.query(

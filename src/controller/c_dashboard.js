@@ -2,6 +2,7 @@ const {
   todayIncomeModel,
   perWeekModel,
   yearIncomeModel,
+  perMonthModel,
 } = require("../model/m_dashboard");
 const helper = require("../helper/response");
 
@@ -43,6 +44,19 @@ module.exports = {
         return helper.response(res, 200, "Success Sum Year Income", result);
       } else {
         return helper.response(res, 404, `Income for this year is null`);
+      }
+    } catch (error) {
+      console.log(error);
+      return helper.response(res, 400, "Bad Request", error);
+    }
+  },
+  perMonth: async (req, res) => {
+    try {
+      const result = await perMonthModel();
+      if (result.length > 0) {
+        return helper.response(res, 200, "Success Sum Month Income", result);
+      } else {
+        return helper.response(res, 404, `Income is null`);
       }
     } catch (error) {
       console.log(error);

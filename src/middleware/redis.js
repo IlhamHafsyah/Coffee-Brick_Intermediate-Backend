@@ -115,7 +115,24 @@ module.exports = {
         return helper.response(
           res,
           200,
-          "Success Get Promo Code By Id",
+          "Success Get History By Id",
+          JSON.parse(result)
+        );
+      } else {
+        console.log("data tidak ada di redis");
+        next();
+      }
+    });
+  },
+  getDetailhistoryByIdRedis: (req, res, next) => {
+    const { id } = req.params;
+    client.get(`getdetailhistorybyid:${id}`, (error, result) => {
+      if (!error && result != null) {
+        console.log("data ada di redis");
+        return helper.response(
+          res,
+          200,
+          "Success Get Detail History By Id",
           JSON.parse(result)
         );
       } else {
