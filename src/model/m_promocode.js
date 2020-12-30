@@ -3,11 +3,10 @@ const connection = require('../config/mysql')
 module.exports = {
   getPromocodeModel: () => {
     return new Promise((resolve, reject) => {
-      connection.query(
-        'SELECT * FROM promocode', (error, result) => {
-          !error ? resolve(result) : reject(new Error(error))
-          newFunction(result, error)
-        })
+      connection.query('SELECT * FROM promocode', (error, result) => {
+        !error ? resolve(result) : reject(new Error(error))
+        newFunction(result, error)
+      })
     })
   },
   getPromocodeByIdModel: (id) => {
@@ -61,11 +60,12 @@ module.exports = {
   },
   deletePromocodeModel: (id) => {
     return new Promise((resolve, reject) => {
-      connection.query('DELETE FROM promocode WHERE promocode_id = ?',
-      id,
-      (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      }
+      connection.query(
+        'DELETE FROM promocode WHERE promocode_id = ?',
+        id,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
       )
     })
   }

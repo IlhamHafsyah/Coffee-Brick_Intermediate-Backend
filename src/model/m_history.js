@@ -1,93 +1,93 @@
-const connection = require("../config/mysql");
+const connection = require('../config/mysql')
 
 module.exports = {
   getHistoryModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "SELECT * FROM history WHERE history_id = ?",
+        'SELECT * FROM history WHERE history_id = ?',
         id,
         (error, result) => {
-          !error ? resolve(result) : reject(new Error(error));
+          !error ? resolve(result) : reject(new Error(error))
         }
-      );
-    });
+      )
+    })
   },
   getDetailhistoryModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
         `SELECT product.product_name, detailhistory.qty, detailhistory.subtotal FROM detailhistory JOIN product ON detailhistory.product_id = product.product_id WHERE history_id = ${id}`,
         (error, result) => {
-          !error ? resolve(result) : reject(new Error(error));
+          !error ? resolve(result) : reject(new Error(error))
         }
-      );
-    });
+      )
+    })
   },
   postHistoryModel: (setData) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO history SET ?",
+        'INSERT INTO history SET ?',
         setData,
         (error, result) => {
           if (!error) {
             const newResult = {
               product_id: result.insertId,
-              ...setData,
-            };
-            resolve(newResult);
+              ...setData
+            }
+            resolve(newResult)
           } else {
-            reject(new Error(error));
+            reject(new Error(error))
           }
         }
-      );
-    });
+      )
+    })
   },
   postDetailhistoryModel: (setData) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "INSERT INTO detailhistory SET ?",
+        'INSERT INTO detailhistory SET ?',
         setData,
         (error, result) => {
           if (!error) {
             const newResult = {
               product_id: result.insertId,
-              ...setData,
-            };
-            resolve(newResult);
+              ...setData
+            }
+            resolve(newResult)
           } else {
-            reject(new Error(error));
+            reject(new Error(error))
           }
         }
-      );
-    });
+      )
+    })
   },
   patchHistoryModel: (setData, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "UPDATE history SET ? WHERE history_id = ?",
+        'UPDATE history SET ? WHERE history_id = ?',
         [setData, id],
         (error, result) => {
           if (!error) {
             const newResult = {
               history_id: id,
-              ...setData,
-            };
-            resolve(newResult);
+              ...setData
+            }
+            resolve(newResult)
           } else {
-            reject(new Error(error));
+            reject(new Error(error))
           }
         }
-      );
-    });
+      )
+    })
   },
   deleteHistoryModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        "DELETE FROM history WHERE history_id = ?",
+        'DELETE FROM history WHERE history_id = ?',
         id,
         (error, result) => {
-          !error ? resolve(result) : reject(new Error(error));
+          !error ? resolve(result) : reject(new Error(error))
         }
-      );
-    });
-  },
-};
+      )
+    })
+  }
+}
