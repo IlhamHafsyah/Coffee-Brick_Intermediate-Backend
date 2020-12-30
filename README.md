@@ -30,7 +30,7 @@ This project was built as a form of response to technological developments, espe
 Open .env file on your favorite code editor, and copy paste this code below :
 
 ```
-PORT=4000
+PORT=4001
 DB_HOST=localhost
 DB_USER=root
 DB_PASSWORD=''
