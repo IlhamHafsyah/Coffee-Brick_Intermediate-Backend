@@ -29,6 +29,6 @@ app.get('*', (request, response) => {
   response.status(404).send('Path not found !')
 })
 
-app.listen(4001, () => {
-  console.log('Express app is listening on port 4001')
+app.listen(4000, () => {
+  console.log('Express app is listening on port 4000')
 })
