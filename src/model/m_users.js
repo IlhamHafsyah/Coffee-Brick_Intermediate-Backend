@@ -65,6 +65,26 @@ module.exports = {
       )
     })
   },
+  patchPassModel: (setPass, id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'UPDATE users1 SET ? WHERE users_id = ?',
+        [setPass, id],
+        (error, result) => {
+          if (!error) {
+            const newResult = {
+              users_id: id,
+              ...setPass
+            }
+            resolve(newResult)
+          } else {
+            console.log(error)
+            reject(new Error(error))
+          }
+        }
+      )
+    })
+  },
   deleteUsersModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(

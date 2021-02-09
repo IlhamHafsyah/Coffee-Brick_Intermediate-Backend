@@ -36,7 +36,7 @@ module.exports = {
   },
   postPromocode: async (req, res) => {
     try {
-      const { promocode_name, promocode_discount, promocode_status } = req.body
+      const { promocode_name, promocode_discount, minimum_purchase, valid_until, promocode_status } = req.body
       if (
         promocode_name == null ||
         promocode_discount == null ||
@@ -48,6 +48,8 @@ module.exports = {
           promocode_name,
           promocode_image: req.file === undefined ? '' : req.file.filename,
           promocode_discount,
+          minimum_purchase,
+          valid_until,
           promocode_updated_at: new Date(),
           promocode_status
         }
@@ -61,14 +63,14 @@ module.exports = {
   patchPromocode: async (req, res) => {
     try {
       const { id } = req.params
-      const getName = await getPromocodeByIdModel(id)
-      const name = getName[0].promocode_image
-      fs.unlink(`./upload/promocode/${name}`, function (err) {
-        if (err) {
-          console.log('Error while deleting the file' + err)
-        }
-      })
-      const { promocode_name, promocode_status, promocode_discount } = req.body
+      // const getName = await getPromocodeByIdModel(id)
+      // const name = getName[0].promocode_image
+      // fs.unlink(`./upload/${name}`, function (err) {
+      //   if (err) {
+      //     console.log('Error while deleting the file' + err)
+      //   }
+      // })
+      const { promocode_name, promocode_status, minimum_purchase, valid_until, promocode_discount } = req.body
       if (
         promocode_name == null ||
         promocode_discount == null ||
@@ -80,6 +82,8 @@ module.exports = {
           promocode_name,
           promocode_image: req.file === undefined ? '' : req.file.filename,
           promocode_discount,
+          minimum_purchase,
+          valid_until,
           promocode_created_at: new Date(),
           promocode_status
         }
@@ -100,7 +104,7 @@ module.exports = {
       const { id } = req.params
       const getName = await getPromocodeByIdModel(id)
       const name = getName[0].promocode_image
-      fs.unlink(`./upload/promocode/${name}`, function (err) {
+      fs.unlink(`./upload/${name}`, function (err) {
         if (err) {
           console.log('Error while deleting the file' + err)
         }

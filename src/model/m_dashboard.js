@@ -1,10 +1,10 @@
 const connection = require('../config/mysql')
 
 module.exports = {
-  todayIncomeModel: (date) => {
+  todayIncomeModel: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `SELECT SUM(subtotal) AS today_income FROM history WHERE history_created_at LIKE '%${date}%'`,
+        `SELECT SUM(subtotal) AS today_income FROM history WHERE history_created_at LIKE '%2021-01-12%'`,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
         }

@@ -85,11 +85,13 @@ module.exports = {
   },
   postDetailhistory: async (req, res) => {
     try {
-      const [{ product_id, qty, size, subtotal, history_id }] = req.body
+      const [{ product_id, qty, size, payment_method, delivery_method, subtotal, history_id }] = req.body
       const setData = {
         product_id,
         qty,
         size,
+        payment_method,
+        delivery_method,
         subtotal,
         history_id
       }

@@ -9,8 +9,8 @@ const helper = require('../helper/response')
 module.exports = {
   todayIncome: async (req, res) => {
     try {
-      const { date } = req.body
-      const result = await todayIncomeModel(date)
+      // const { date } = req.body
+      const result = await todayIncomeModel()
       if (result.length > 0) {
         return helper.response(res, 200, 'Success Sum Today Income', result)
       } else {

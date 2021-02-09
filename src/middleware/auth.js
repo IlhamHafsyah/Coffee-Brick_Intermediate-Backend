@@ -12,14 +12,14 @@ module.exports = {
           (error && error.name === 'JsonWebTokenError') ||
           (error && error.name === 'TokenExpiredError')
         ) {
-          return helper.response(res, 400, error.message)
+          return helper.response(res, 403, error.message)
         } else {
           req.decodetoken = result
           next()
         }
       })
     } else {
-      return helper.response(res, 400, 'Please Login First !')
+      return helper.response(res, 403, 'Please Login First !')
     }
   },
   authentication: (req, res, next) => {

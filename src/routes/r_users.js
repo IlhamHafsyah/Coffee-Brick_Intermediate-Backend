@@ -7,7 +7,8 @@ const {
   getUsers,
   getUsersById,
   patchUsers,
-  deleteUsers
+  deleteUsers,
+  patchPassword
 } = require('../controller/c_users')
 const {
   getUsersRedis,
@@ -25,6 +26,11 @@ router.patch(
   ClearDataUsersRedis,
   uploadImage,
   patchUsers
+)
+router.patch(
+  '/editpass/:id',
+  authorization,
+  patchPassword
 )
 router.delete('/:id', authorization, ClearDataUsersRedis, deleteUsers)
 

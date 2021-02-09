@@ -49,8 +49,8 @@ module.exports = {
         totalPage,
         limit,
         totalData,
-        nextLink: nextLink && `http://localhost:4000/product?${nextLink}`,
-        prevLink: prevLink && `http://localhost:4000/product?${prevLink}`
+        nextLink: nextLink && `http://localhost:4001/product?${nextLink}`,
+        prevLink: prevLink && `http://localhost:4001/product?${prevLink}`
       }
       const result = await getProductModel(limit, offset, search, sort, id)
       const newData = { result, pageInfo }
@@ -97,64 +97,91 @@ module.exports = {
         product_price,
         product_stock,
         product_desc,
+        size_r,
+        size_l,
+        size_xl,
+        size_250,
+        size_300,
+        size_500,
         home_delivery,
         dine_in,
         take_away,
+        start_hour,
+        end_hour,
         product_status
       } = request.body
-      if (
-        category_id == null ||
-        product_name == null ||
-        product_price == null ||
-        product_stock == null ||
-        product_desc == null ||
-        home_delivery == null ||
-        dine_in == null ||
-        take_away == null ||
-        product_status == null
-      ) {
-        console.log('All data must be filled in')
-      } else {
-        const setData = {
-          category_id,
-          product_name,
-          product_image:
-            request.file === undefined ? '' : request.file.filename,
-          product_price,
-          product_stock,
-          product_desc,
-          home_delivery,
-          dine_in,
-          take_away,
-          product_created_at: new Date(),
-          product_status
-        }
-        const result = await postProductModel(setData)
-        return helper.response(response, 200, 'Success Post Product', result)
+      // if (
+      //   category_id == null ||
+      //   product_name == null ||
+      //   product_price == null ||
+      //   product_stock == null ||
+      //   product_desc == null ||
+      //   home_delivery == null ||
+      //   dine_in == null ||
+      //   take_away == null ||
+      //   product_status == null
+      // ) {
+      //   console.log('All data must be filled in')
+      // } else {
+      const setData = {
+        category_id,
+        product_name,
+        product_image:
+          request.file === undefined ? '' : request.file.filename,
+        product_price,
+        product_stock,
+        product_desc,
+        size_r,
+        size_l,
+        size_xl,
+        size_250,
+        size_300,
+        size_500,
+        home_delivery,
+        dine_in,
+        take_away,
+        start_hour,
+        end_hour,
+        product_created_at: new Date(),
+        product_status
       }
+      const result = await postProductModel(setData)
+      return helper.response(response, 200, 'Success Post Product', result)
+      // }
     } catch (error) {
+      console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
     }
   },
   patchProduct: async (request, response) => {
     try {
       const { id } = request.params
-      const getName = await getProductByIdModel(id)
-      const name = getName[0].product_image
-      fs.unlink(`./upload/product/${name}`, function (err) {
-        if (err) {
-          console.log('Error while deleting the file' + err)
-        }
-      })
+      // const getName = await getProductByIdModel(id)
+      // const name = getName[0].product_image
+      // if (name !== '' && name !== request.file.filename) {
+      //   fs.unlink(`./upload/${name}`, function (err) {
+      //     if (err) {
+      //       console.log('Error while deleting the file' + err)
+      //     }
+      //   })
+      // }
       const {
         category_id,
         product_name,
         product_price,
         product_stock,
         product_desc,
+        size_r,
+        size_l,
+        size_xl,
+        size_250,
+        size_300,
+        size_500,
         home_delivery,
         dine_in,
         take_away,
+        start_hour,
+        end_hour,
         product_status
       } = request.body
       if (
@@ -174,16 +201,38 @@ module.exports = {
           category_id,
           product_name,
           product_image:
-            request.file === undefined ? '' : request.file.filename,
+          request.file === undefined ? '' : request.file.filename,
           product_price,
           product_stock,
           product_desc,
+          size_r,
+          size_l,
+          size_xl,
+          size_250,
+          size_300,
+          size_500,
           home_delivery,
           dine_in,
           take_away,
-          product_updated_at: new Date(),
+          start_hour,
+          end_hour,
+          product_created_at: new Date(),
           product_status
         }
+        // console.log('gambar isinya ' + setData.product_image)
+        // const getName = await getProductByIdModel(id)
+        // const name = getName[0].product_image
+        // console.log(setData.product_image)
+        // if (setData.product_image === '') {
+        //   delete setData.product_image
+        // }
+        // if (name !== '' && name !== setData.product_image) {
+        //   fs.unlink(`./upload/${name}`, function (err) {
+        //     if (err) {
+        //       console.log('Error while deleting the file' + err)
+        //     }
+        //   })
+        // }
         const checkId = await getProductByIdModel(id)
         if (checkId.length > 0) {
           const result = await patchProductModel(setData, id)
@@ -197,6 +246,7 @@ module.exports = {
         }
       }
     } catch (error) {
+      console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
     }
   },
@@ -205,7 +255,7 @@ module.exports = {
       const { id } = req.params
       const getName = await getProductByIdModel(id)
       const name = getName[0].product_image
-      fs.unlink(`./upload/product/${name}`, function (err) {
+      fs.unlink(`./upload/${name}`, function (err) {
         if (err) {
           console.log('Error while deleting the file' + err)
         }

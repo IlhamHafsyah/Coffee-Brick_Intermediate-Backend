@@ -9,7 +9,8 @@ const {
   getUsersModel,
   getUsersByIdModel,
   patchUsersModel,
-  deleteUsersModel
+  deleteUsersModel,
+  patchPassModel
 } = require('../model/m_users')
 const fs = require('fs')
 
@@ -49,6 +50,7 @@ module.exports = {
       const result = await registerUsersModel(setData)
       return helper.response(res, 200, 'Success register Users', result)
     } catch (error) {
+      console.log(error)
       return helper.response(res, 400, 'Bad Request', error)
     }
   },
@@ -115,17 +117,17 @@ module.exports = {
   patchUsers: async (req, res) => {
     try {
       const { id } = req.params
-      const getName = await getUsersByIdModel(id)
-      const name = getName[0].profile_picture
-      fs.unlink(`./upload/profile/${name}`, function (err) {
-        if (err) {
-          console.log('Error while deleting the file' + err)
-        }
-      })
+      // const getName = await getUsersByIdModel(id)
+      // const name = getName[0].profile_picture
+      // fs.unlink(`./upload/${name}`, function (err) {
+      //   if (err) {
+      //     console.log('Error while deleting the file' + err)
+      //   }
+      // })
       const {
         users_name,
         users_email,
-        users_password,
+        // users_password,
         users_phone,
         delivery_address,
         display_name,
@@ -136,49 +138,71 @@ module.exports = {
         users_role,
         status
       } = req.body
+      // const salt = bcrypt.genSaltSync(10)
+      // const encryptPassword = bcrypt.hashSync(users_password, salt)
+      // if (
+      //   users_name == null ||
+      //   users_email == null ||
+      //   users_password == null ||
+      //   users_phone == null ||
+      //   delivery_address == null ||
+      //   display_name == null ||
+      //   first_name == null ||
+      //   last_name == null ||
+      //   date_of_birth == null ||
+      //   users_gender == null ||
+      //   users_role == null ||
+      //   status == null
+      // ) {
+      //   console.log('All data must be filled in')
+      // } else {
+      const setData = {
+        users_name,
+        users_email,
+        // users_password: encryptPassword,
+        profile_picture: req.file === undefined ? '' : req.file.filename,
+        users_phone,
+        delivery_address,
+        display_name,
+        first_name,
+        last_name,
+        date_of_birth,
+        users_gender,
+        users_role,
+        status,
+        users_updated_at: new Date()
+      }
+      const checkId = await getUsersByIdModel(id)
+      if (checkId.length > 0) {
+        const result = await patchUsersModel(setData, id)
+        return helper.response(res, 200, 'Success Patch User Data', result)
+      } else {
+        return helper.response(res, 404, `Users By Id : ${id} Not Found`)
+      }
+      // }
+    } catch (error) {
+      console.log(error)
+      return helper.response(res, 400, 'Bad Request', error)
+    }
+  },
+  patchPassword: async (req, res) => {
+    try {
+      const { id } = req.params
+      const { users_password } = req.body
       const salt = bcrypt.genSaltSync(10)
       const encryptPassword = bcrypt.hashSync(users_password, salt)
-      if (
-        users_name == null ||
-        users_email == null ||
-        users_password == null ||
-        users_phone == null ||
-        delivery_address == null ||
-        display_name == null ||
-        first_name == null ||
-        last_name == null ||
-        date_of_birth == null ||
-        users_gender == null ||
-        users_role == null ||
-        status == null
-      ) {
-        console.log('All data must be filled in')
+      const setPass = {
+        users_password: encryptPassword
+      }
+      const checkId = await getUsersByIdModel(id)
+      if (checkId.length > 0) {
+        const result = await patchPassModel(setPass, id)
+        return helper.response(res, 200, 'Success Patch User Data', result)
       } else {
-        const setData = {
-          users_name,
-          users_email,
-          users_password: encryptPassword,
-          profile_picture: req.file === undefined ? '' : req.file.filename,
-          users_phone,
-          delivery_address,
-          display_name,
-          first_name,
-          last_name,
-          date_of_birth,
-          users_gender,
-          users_role,
-          status,
-          users_updated_at: new Date()
-        }
-        const checkId = await getUsersByIdModel(id)
-        if (checkId.length > 0) {
-          const result = await patchUsersModel(setData, id)
-          return helper.response(res, 200, 'Success Patch User Data', result)
-        } else {
-          return helper.response(res, 404, `Product By Id : ${id} Not Found`)
-        }
+        return helper.response(res, 404, `Password By Id : ${id} Not Found`)
       }
     } catch (error) {
+      console.log(error)
       return helper.response(res, 400, 'Bad Request', error)
     }
   },
@@ -187,7 +211,7 @@ module.exports = {
       const { id } = req.params
       const getName = await getUsersByIdModel(id)
       const name = getName[0].profile_picture
-      fs.unlink(`./upload/profile/${name}`, function (err) {
+      fs.unlink(`./upload/${name}`, function (err) {
         if (err) {
           console.log('Error while deleting the file' + err)
         }
