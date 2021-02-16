@@ -5,7 +5,7 @@ const client = redis.createClient()
 module.exports = {
   getProductByIdRedis: (request, response, next) => {
     const { id } = request.params
-    client.get(`getproductbyid:${id}`, (error, result) => {
+    client.get(`CBgetproductbyid:${id}`, (error, result) => {
       if (!error && result != null) {
         return helper.response(
           response,
@@ -19,7 +19,7 @@ module.exports = {
     })
   },
   getProductRedis: (req, res, next) => {
-    client.get(`getproduct:${JSON.stringify(req.query)}`, (error, result) => {
+    client.get(`CBgetproduct:${JSON.stringify(req.query)}`, (error, result) => {
       if (!error && result != null) {
         const newResult = JSON.parse(result)
         return helper.response(
@@ -35,7 +35,7 @@ module.exports = {
     })
   },
   clearDataProductRedis: (req, res, next) => {
-    client.keys('getproduct*', (_error, result) => {
+    client.keys('CB*', (_error, result) => {
       if (result.length > 0) {
         result.forEach((value) => {
           client.del(value)

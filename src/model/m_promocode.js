@@ -1,12 +1,15 @@
 const connection = require('../config/mysql')
 
 module.exports = {
-  getPromocodeModel: () => {
+  getPromocodeModel: (limit, offset) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT * FROM promocode', (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-        newFunction(result, error)
-      })
+      connection.query(
+        `SELECT * FROM promocode LIMIT ${limit} OFFSET ${offset}`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+          newFunction(result, error)
+        }
+      )
     })
   },
   getPromocodeByIdModel: (id) => {
@@ -68,9 +71,19 @@ module.exports = {
         }
       )
     })
+  },
+  getPromoCountModel: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT COUNT(*) AS total FROM promocode',
+        (error, result) => {
+          !error ? resolve(result[0].total) : reject(new Error(error))
+        }
+      )
+    })
   }
 }
-function newFunction (result, error) {
+function newFunction(result, error) {
   console.log(result)
   console.log(error)
 }

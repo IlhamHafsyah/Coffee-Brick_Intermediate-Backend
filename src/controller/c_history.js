@@ -4,7 +4,9 @@ const {
   postHistoryModel,
   postDetailhistoryModel,
   deleteHistoryModel,
-  patchHistoryModel
+  patchHistoryModel,
+  historyIdModel,
+  invoiceModel
 } = require('../model/m_history')
 const redis = require('redis')
 const client = redis.createClient()
@@ -50,26 +52,20 @@ module.exports = {
   },
   postHistory: async (req, res) => {
     try {
-      const {
-        history_id,
-        invoice,
-        payment_method,
-        subtotal,
-        user_id,
-        status
-      } = req.body
+      const inv = await invoiceModel()
+      const plus = parseInt(inv[0].highest) + 1
+      const { history_id, payment_method, subtotal, user_id, status } = req.body
       if (
-        invoice == null ||
         payment_method == null ||
         subtotal == null ||
         user_id == null ||
         status == null
       ) {
-        console.log('All data must be filled in')
+        return helper.response(res, 400, 'All data must be filled in')
       } else {
         const setData = {
           history_id,
-          invoice,
+          invoice: plus,
           payment_method,
           subtotal,
           user_id,
@@ -80,24 +76,46 @@ module.exports = {
         return helper.response(res, 200, 'Success Post History', result)
       }
     } catch (error) {
+      console.log(error)
       return helper.response(res, 400, 'Bad Request', error)
     }
   },
   postDetailhistory: async (req, res) => {
     try {
-      const [{ product_id, qty, size, payment_method, delivery_method, subtotal, history_id }] = req.body
-      const setData = {
-        product_id,
-        qty,
-        size,
-        payment_method,
-        delivery_method,
-        subtotal,
-        history_id
+      const detail = req.body
+      let result
+      const id = await historyIdModel()
+      const plus = parseInt(id[0].highestId) + 1
+      for (let i = 0; i < detail.length; i++) {
+        const {
+          product_id,
+          qty,
+          size,
+          payment_method,
+          delivery_method,
+          subtotal,
+          tax,
+          shipping
+        } = detail[i]
+        // console.log(detail[i])
+        const setData = {
+          product_id,
+          qty,
+          size,
+          payment_method,
+          delivery_method,
+          subtotal,
+          tax,
+          shipping,
+          history_id: plus
+        }
+        console.log(setData)
+
+        result = await postDetailhistoryModel(setData)
       }
-      const result = await postDetailhistoryModel(setData)
       return helper.response(res, 200, 'Success Post Detail History', result)
     } catch (error) {
+      console.log(error)
       return helper.response(res, 400, 'Bad Request', error)
     }
   },

@@ -4,7 +4,7 @@ module.exports = {
   getHistoryModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        'SELECT * FROM history WHERE history_id = ?',
+        'SELECT * FROM history WHERE user_id = ?',
         id,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
@@ -84,6 +84,26 @@ module.exports = {
       connection.query(
         'DELETE FROM history WHERE history_id = ?',
         id,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  historyIdModel: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT MAX(history_id) AS highestId FROM detailhistory',
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  invoiceModel: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT MAX(invoice) AS highest FROM history',
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
         }

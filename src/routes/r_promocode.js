@@ -14,7 +14,7 @@ const {
   clearDataPromocodeRedis
 } = require('../middleware/redis')
 
-router.get('/', getPromocodeRedis, getPromocode)
+router.get('/', authorization, getPromocode)
 router.get('/:id', authorization, getPromocodeByIdRedis, getPromocodeById)
 router.post(
   '/',

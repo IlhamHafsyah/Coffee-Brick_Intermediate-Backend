@@ -4,7 +4,8 @@ module.exports = {
   todayIncomeModel: () => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `SELECT SUM(subtotal) AS today_income FROM history WHERE history_created_at LIKE '%2021-01-12%'`,
+        'SELECT SUM(subtotal) AS today_income FROM history WHERE DAY(history_created_at) = DAY(NOW())',
+        // `SELECT SUM(subtotal) AS today_income FROM history WHERE history_created_at LIKE '%${date}%'`,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
         }

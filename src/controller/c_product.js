@@ -1,6 +1,6 @@
 const {
   getProductModel,
-  getProductCountModel,
+  getProductCountModels,
   getProductByIdModel,
   postProductModel,
   patchProductModel,
@@ -15,25 +15,27 @@ const fs = require('fs')
 module.exports = {
   getProduct: async (request, response) => {
     try {
-      const totalData = await getProductCountModel()
+      // const totalData = await getProductCountModel()
       let { page, limit, search, sort, id } = request.query
-      page = parseInt(page)
-      const a = page
+      // page = parseInt(page)
+      // const a = page
       const b = sort
-      limit = parseInt(limit)
-      if (search === '') {
-        page = a
-      } else {
-        page = 1
-        limit = totalData
-      }
-      if (sort === '') {
-        sort = 'product_id'
-      } else {
-        page = 1
-        limit = totalData
-        sort = b
-      }
+      // limit = parseInt(limit)
+      // if (search === '') {
+      //   page = a
+      // } else {
+      //   page = 1
+      //   limit = totalData
+      // }
+      // if (sort === '') {
+      //   sort = 'product_id'
+      // } else {
+      //   page = 1
+      //   limit = totalData
+      //   sort = b
+      // }
+      sort = sort === '' ? (sort = 'product_id') : (sort = b)
+      const totalData = await getProductCountModels(search, sort, id)
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
       const prevLink =
@@ -67,6 +69,7 @@ module.exports = {
         pageInfo
       )
     } catch (error) {
+      console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
     }
   },
@@ -110,24 +113,10 @@ module.exports = {
         end_hour,
         product_status
       } = request.body
-      // if (
-      //   category_id == null ||
-      //   product_name == null ||
-      //   product_price == null ||
-      //   product_stock == null ||
-      //   product_desc == null ||
-      //   home_delivery == null ||
-      //   dine_in == null ||
-      //   take_away == null ||
-      //   product_status == null
-      // ) {
-      //   console.log('All data must be filled in')
-      // } else {
       const setData = {
         category_id,
         product_name,
-        product_image:
-          request.file === undefined ? '' : request.file.filename,
+        product_image: request.file === undefined ? '' : request.file.filename,
         product_price,
         product_stock,
         product_desc,
@@ -156,15 +145,6 @@ module.exports = {
   patchProduct: async (request, response) => {
     try {
       const { id } = request.params
-      // const getName = await getProductByIdModel(id)
-      // const name = getName[0].product_image
-      // if (name !== '' && name !== request.file.filename) {
-      //   fs.unlink(`./upload/${name}`, function (err) {
-      //     if (err) {
-      //       console.log('Error while deleting the file' + err)
-      //     }
-      //   })
-      // }
       const {
         category_id,
         product_name,
@@ -201,7 +181,7 @@ module.exports = {
           category_id,
           product_name,
           product_image:
-          request.file === undefined ? '' : request.file.filename,
+            request.file === undefined ? '' : request.file.filename,
           product_price,
           product_stock,
           product_desc,

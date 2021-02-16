@@ -9,7 +9,12 @@ const helper = require('../helper/response')
 module.exports = {
   todayIncome: async (req, res) => {
     try {
-      // const { date } = req.body
+      const date = new Date()
+      const justDate = String(date)
+      console.log(date)
+      console.log(justDate)
+      // const justDate = date.substring(0, 10)
+      // console.log(justDate)
       const result = await todayIncomeModel()
       if (result.length > 0) {
         return helper.response(res, 200, 'Success Sum Today Income', result)
@@ -17,6 +22,7 @@ module.exports = {
         return helper.response(res, 404, 'Today Income for today is null')
       }
     } catch (error) {
+      console.log(error)
       return helper.response(res, 400, 'Bad Request', error)
     }
   },
