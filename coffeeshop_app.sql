@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 16 Feb 2021 pada 07.23
+-- Waktu pembuatan: 17 Feb 2021 pada 07.30
 -- Versi server: 10.4.14-MariaDB
 -- Versi PHP: 7.4.11
 
@@ -29,10 +29,10 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `category` (
   `category_id` int(20) NOT NULL,
-  `category_name` varchar(50) NOT NULL,
+  `category_name` varchar(50) DEFAULT NULL,
   `category_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `category_updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `category_status` int(1) NOT NULL
+  `category_status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -76,15 +76,15 @@ INSERT INTO `coupon` (`coupon_id`, `coupon_name`, `coupon_created_at`, `coupon_u
 
 CREATE TABLE `detailhistory` (
   `detailhistory_id` int(20) NOT NULL,
-  `product_id` int(20) NOT NULL,
-  `qty` int(4) NOT NULL,
-  `payment_method` varchar(20) NOT NULL,
-  `delivery_method` varchar(20) NOT NULL,
-  `size` varchar(20) NOT NULL,
-  `tax` int(10) NOT NULL,
-  `shipping` int(11) NOT NULL,
-  `subtotal` int(10) NOT NULL,
-  `history_id` int(10) NOT NULL
+  `product_id` int(20) DEFAULT NULL,
+  `qty` int(4) DEFAULT NULL,
+  `payment_method` varchar(20) DEFAULT NULL,
+  `delivery_method` varchar(20) DEFAULT NULL,
+  `size` varchar(20) DEFAULT NULL,
+  `tax` int(10) DEFAULT NULL,
+  `shipping` int(11) DEFAULT NULL,
+  `subtotal` int(10) DEFAULT NULL,
+  `history_id` int(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -117,7 +117,10 @@ INSERT INTO `detailhistory` (`detailhistory_id`, `product_id`, `qty`, `payment_m
 (23, 4, 1, 'Card', 'Dine in', 'X Large', 12400, 5000, 30000, 14),
 (24, 7, 1, 'Card', 'Dine in', 'Large', 12400, 5000, 30000, 14),
 (25, 2, 1, 'cash on delivery', 'Dine in', 'X Large', 2800, 5000, 28000, 15),
-(26, 3, 1, 'bank account', 'Dine in', '500 gr', 3200, 5000, 32000, 16);
+(26, 3, 1, 'bank account', 'Dine in', '500 gr', 3200, 5000, 32000, 16),
+(27, 1, 1, 'Card', 'Dine in', '500 gr', 9600, 5000, 34000, 17),
+(28, 3, 1, 'Card', 'Dine in', '500 gr', 9600, 5000, 32000, 17),
+(29, 8, 1, 'Card', 'Dine in', '500 gr', 9600, 5000, 30000, 17);
 
 -- --------------------------------------------------------
 
@@ -126,13 +129,13 @@ INSERT INTO `detailhistory` (`detailhistory_id`, `product_id`, `qty`, `payment_m
 --
 
 CREATE TABLE `history` (
-  `history_id` int(10) NOT NULL,
-  `invoice` int(10) NOT NULL,
-  `payment_method` varchar(20) NOT NULL,
+  `history_id` int(10) DEFAULT NULL,
+  `invoice` int(10) DEFAULT NULL,
+  `payment_method` varchar(20) DEFAULT NULL,
   `history_created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `subtotal` int(8) NOT NULL,
-  `user_id` int(4) NOT NULL,
-  `status` int(1) NOT NULL
+  `subtotal` int(8) DEFAULT NULL,
+  `user_id` int(4) DEFAULT NULL,
+  `status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -149,7 +152,8 @@ INSERT INTO `history` (`history_id`, `invoice`, `payment_method`, `history_creat
 (13, 8, 'Card', '2021-02-15 01:40:17', 40200, 22, 0),
 (1, 9, 'Card', '2021-02-16 03:17:20', 141400, 22, 0),
 (1, 10, 'cash on delivery', '2021-02-16 03:30:19', 35800, 22, 0),
-(16, 11, 'bank account', '2021-02-16 03:32:22', 40200, 22, 0);
+(16, 11, 'bank account', '2021-02-16 03:32:22', 40200, 22, 0),
+(1, 12, 'Card', '2021-02-16 09:03:42', 110600, 22, 0);
 
 -- --------------------------------------------------------
 
@@ -158,11 +162,11 @@ INSERT INTO `history` (`history_id`, `invoice`, `payment_method`, `history_creat
 --
 
 CREATE TABLE `payment` (
-  `payment_id` varchar(5) NOT NULL,
-  `payment_name` varchar(20) NOT NULL,
+  `payment_id` varchar(5) DEFAULT NULL,
+  `payment_name` varchar(20) DEFAULT NULL,
   `payment_created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `payment_updated_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `payment_status` int(1) NOT NULL
+  `payment_status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -173,26 +177,26 @@ CREATE TABLE `payment` (
 
 CREATE TABLE `product` (
   `product_id` int(20) NOT NULL,
-  `category_id` int(20) NOT NULL,
-  `product_name` varchar(50) NOT NULL,
-  `product_image` varchar(255) NOT NULL,
-  `product_price` int(10) NOT NULL,
-  `product_stock` int(3) NOT NULL,
-  `product_desc` varchar(200) NOT NULL,
-  `size_r` int(10) NOT NULL,
-  `size_l` int(10) NOT NULL,
-  `size_xl` int(10) NOT NULL,
-  `size_250` int(10) NOT NULL,
-  `size_300` int(10) NOT NULL,
-  `size_500` int(10) NOT NULL,
-  `home_delivery` int(1) NOT NULL,
-  `dine_in` int(1) NOT NULL,
-  `take_away` int(1) NOT NULL,
-  `start_hour` time(6) NOT NULL,
-  `end_hour` time(6) NOT NULL,
+  `category_id` int(20) DEFAULT NULL,
+  `product_name` varchar(50) DEFAULT NULL,
+  `product_image` varchar(255) DEFAULT NULL,
+  `product_price` int(10) DEFAULT NULL,
+  `product_stock` int(3) DEFAULT NULL,
+  `product_desc` varchar(200) DEFAULT NULL,
+  `size_r` int(10) DEFAULT NULL,
+  `size_l` int(10) DEFAULT NULL,
+  `size_xl` int(10) DEFAULT NULL,
+  `size_250` int(10) DEFAULT NULL,
+  `size_300` int(10) DEFAULT NULL,
+  `size_500` int(10) DEFAULT NULL,
+  `home_delivery` int(1) DEFAULT NULL,
+  `dine_in` int(1) DEFAULT NULL,
+  `take_away` int(1) DEFAULT NULL,
+  `start_hour` time(6) DEFAULT NULL,
+  `end_hour` time(6) DEFAULT NULL,
   `product_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `product_updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `product_status` int(1) NOT NULL
+  `product_status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -206,7 +210,7 @@ INSERT INTO `product` (`product_id`, `category_id`, `product_name`, `product_ima
 (4, 2, 'Creamy Ice Lattes', '2021-02-10T03-03-13.683Zice-latte.jpg', 30000, 100, 'Creamy Italian latte Iced, nothing better than a cold iced in the summer time heat.', 1, 1, 1, 0, 0, 0, 0, 1, 1, '00:00:00.000000', '00:00:00.000000', '2021-02-10 03:03:13', '2020-12-10 05:11:10', 1),
 (5, 3, 'Drum Sticks', '2021-01-12T02-33-22.892Zds.png', 30000, 100, 'Drum Sticks tossed in a crispy coating made with crushed tortilla chips before deep frying.', 0, 0, 0, 1, 1, 1, 1, 1, 1, '00:00:00.000000', '00:00:00.000000', '2021-01-12 02:33:22', '2020-12-10 05:11:10', 1),
 (6, 3, 'Salty Rice', '2021-02-10T03-05-38.119Zsr.jpg', 21000, 100, 'A popular Fujian rice casserole dish and is something I grew up eating with different versions from different families.', 0, 0, 0, 1, 1, 1, 1, 1, 1, '00:00:00.000000', '00:00:00.000000', '2021-02-10 03:05:38', '2020-12-10 05:11:10', 1),
-(7, 1, 'Cold Brew', '', 30000, 100, 'Combines ground coffee and cool water and uses time instead of heat to extract the flavor. It is brewed in small batches and steeped for as long as 48 hours.', 1, 1, 1, 0, 0, 0, 0, 1, 1, '00:00:00.000000', '00:00:00.000000', '2020-12-10 05:11:10', '2020-12-10 05:11:10', 1),
+(7, 1, 'Cold Brew', '2021-02-16T13-08-55.529Zcb.png', 25000, 100, 'Combines ground coffee and cool water and uses time instead of heat to extract the flavor. It is brewed in small batches and steeped for as long as 48 hours.', 1, 1, 1, 0, 0, 0, 0, 1, 1, '08:00:00.000000', '20:00:00.000000', '2021-02-16 13:08:55', '2020-12-10 05:11:10', 1),
 (8, 3, 'Chicken Fire Wings', '2021-02-10T03-04-25.965Zcfw.jpg', 30000, 100, 'Fire Wings has over 20 wing sauces that will blow your mind. Everything from BBQ Sauce to Rubs.', 0, 0, 0, 1, 1, 1, 1, 1, 1, '00:00:00.000000', '00:00:00.000000', '2021-02-10 03:04:26', '2020-12-10 05:11:10', 1),
 (9, 1, 'Americano', '2021-02-10T03-06-31.443Zame.jpeg', 27000, 100, 'An espresso-based drink designed to resemble coffee brewed in a drip filter, considered popular in the United States of America. This drink consists of a single or double-shot of espresso combined wit', 1, 1, 1, 0, 0, 0, 0, 1, 1, '00:00:00.000000', '00:00:00.000000', '2021-02-10 03:06:31', '2020-12-10 19:13:44', 1),
 (10, 1, 'Mocha Latte', '2021-02-10T03-07-29.044Zml.jpg', 33000, 100, 'Based on espresso and hot milk but with added chocolate flavouring and sweetener, typically in the form of cocoa powder and sugar.', 1, 1, 1, 0, 0, 0, 0, 1, 1, '00:00:00.000000', '00:00:00.000000', '2021-02-10 03:07:29', '2020-12-10 19:13:44', 1),
@@ -227,8 +231,7 @@ INSERT INTO `product` (`product_id`, `category_id`, `product_name`, `product_ima
 (38, 2, 'Mango Juice', '2021-02-10T03-12-37.413Zmju.jpg', 18000, 100, 'Mango Juice Jasjus', 0, 0, 0, 0, 0, 0, 1, 1, 1, '00:00:00.000000', '00:00:00.000000', '2021-02-10 03:12:37', '2020-12-30 04:54:52', 1),
 (43, 3, 'Pork', '2021-02-10T03-10-45.415Zpork.jpeg', 100000, 100, 'Pork', 0, 0, 0, 1, 1, 1, 1, 1, 1, '08:00:00.000000', '12:00:00.000000', '2021-02-10 03:10:45', '2021-01-11 18:30:18', 1),
 (44, 2, 'Fresh Milk', '2021-02-10T03-11-31.689Zfm.jpg', 20000, 100, 'Freshhh', 1, 1, 1, 0, 0, 0, 1, 1, 1, '08:00:00.000000', '12:00:00.000000', '2021-02-10 03:11:31', '2021-01-12 07:50:56', 1),
-(48, 3, 'Chicken Katsu', '2021-02-10T03-38-52.255Zckat.jpg', 40000, 100, 'Chicken katsu is generally served with tonkatsu sauce (とんかつソース), a thick Japanese vegetarian pureed fruit-based brown sauce, or a well-seasoned ketchup, as a Hawaiian mixed plate lunch meal.', 0, 0, 0, 1, 1, 1, 1, 1, 0, '08:00:00.000000', '16:00:00.000000', '2021-02-10 03:38:52', '2021-02-10 10:38:52', 1),
-(49, 1, 'Kopi Kucing', '2021-02-16T03-12-10.988Zcfw.jpg', 12000, 100, 'Kucing Nich', 1, 1, 1, 0, 0, 0, 1, 1, 1, '08:00:00.000000', '12:00:00.000000', '2021-02-16 03:12:11', '2021-02-10 23:57:58', 1);
+(48, 3, 'Chicken Katsu', '2021-02-10T03-38-52.255Zckat.jpg', 40000, 100, 'Chicken katsu is generally served with tonkatsu sauce (とんかつソース), a thick Japanese vegetarian pureed fruit-based brown sauce, or a well-seasoned ketchup, as a Hawaiian mixed plate lunch meal.', 0, 0, 0, 1, 1, 1, 1, 1, 0, '08:00:00.000000', '16:00:00.000000', '2021-02-10 03:38:52', '2021-02-10 10:38:52', 1);
 
 -- --------------------------------------------------------
 
@@ -238,14 +241,14 @@ INSERT INTO `product` (`product_id`, `category_id`, `product_name`, `product_ima
 
 CREATE TABLE `promocode` (
   `promocode_id` int(2) NOT NULL,
-  `promocode_name` varchar(15) NOT NULL,
-  `promocode_image` varchar(255) NOT NULL,
-  `promocode_discount` int(2) NOT NULL,
-  `minimum_purchase` int(7) NOT NULL,
+  `promocode_name` varchar(15) DEFAULT NULL,
+  `promocode_image` varchar(255) DEFAULT NULL,
+  `promocode_discount` int(2) DEFAULT NULL,
+  `minimum_purchase` int(7) DEFAULT NULL,
   `valid_until` date DEFAULT NULL,
   `promocode_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `promocode_updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `promocode_status` int(1) NOT NULL
+  `promocode_status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -253,7 +256,8 @@ CREATE TABLE `promocode` (
 --
 
 INSERT INTO `promocode` (`promocode_id`, `promocode_name`, `promocode_image`, `promocode_discount`, `minimum_purchase`, `valid_until`, `promocode_created_at`, `promocode_updated_at`, `promocode_status`) VALUES
-(1, 'FNPR15RG', '2021-01-12T02-31-43.004Zbeef-spag.png', 20, 60000, '2021-01-01', '2021-01-12 02:31:43', '2020-12-11 14:46:52', 1);
+(1, 'FNPR15RG', '2021-01-12T02-31-43.004Zbeef-spag.png', 20, 60000, '2021-01-01', '2021-01-12 02:31:43', '2020-12-11 14:46:52', 1),
+(25, 'CAFEBRR', '2021-02-16T13-09-45.735Zame.jpeg', 20, 60000, '2021-02-23', '2021-02-16 20:09:45', '2021-02-16 13:09:45', 1);
 
 -- --------------------------------------------------------
 
@@ -262,8 +266,8 @@ INSERT INTO `promocode` (`promocode_id`, `promocode_name`, `promocode_image`, `p
 --
 
 CREATE TABLE `size` (
-  `size_id` int(1) NOT NULL,
-  `type` varchar(10) NOT NULL
+  `size_id` int(1) DEFAULT NULL,
+  `type` varchar(10) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -282,17 +286,17 @@ INSERT INTO `size` (`size_id`, `type`) VALUES
 
 CREATE TABLE `user` (
   `user_id` int(10) DEFAULT NULL,
-  `user_name` varchar(100) NOT NULL,
-  `user_display_name` varchar(50) NOT NULL,
-  `user_first_name` varchar(20) NOT NULL,
-  `user_last_name` varchar(20) NOT NULL,
-  `user_birthday` datetime NOT NULL,
-  `user_email` varchar(50) NOT NULL,
-  `user_phone_number` int(15) NOT NULL,
-  `user_address` varchar(100) NOT NULL,
+  `user_name` varchar(100) DEFAULT NULL,
+  `user_display_name` varchar(50) DEFAULT NULL,
+  `user_first_name` varchar(20) DEFAULT NULL,
+  `user_last_name` varchar(20) DEFAULT NULL,
+  `user_birthday` datetime DEFAULT NULL,
+  `user_email` varchar(50) DEFAULT NULL,
+  `user_phone_number` int(15) DEFAULT NULL,
+  `user_address` varchar(100) DEFAULT NULL,
   `user_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `user_updated_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `user_status` int(1) NOT NULL
+  `user_status` int(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -316,19 +320,19 @@ CREATE TABLE `users` (
 
 CREATE TABLE `users1` (
   `users_id` int(20) NOT NULL,
-  `users_name` varchar(100) NOT NULL,
-  `users_email` varchar(100) NOT NULL,
-  `users_password` varchar(150) NOT NULL,
-  `profile_picture` varchar(500) NOT NULL,
-  `users_phone` varchar(20) NOT NULL,
-  `delivery_address` varchar(500) NOT NULL,
-  `display_name` varchar(50) NOT NULL,
-  `first_name` varchar(30) NOT NULL,
-  `last_name` varchar(30) NOT NULL,
+  `users_name` varchar(100) DEFAULT NULL,
+  `users_email` varchar(100) DEFAULT NULL,
+  `users_password` varchar(150) DEFAULT NULL,
+  `profile_picture` varchar(500) DEFAULT NULL,
+  `users_phone` varchar(20) DEFAULT NULL,
+  `delivery_address` varchar(500) DEFAULT NULL,
+  `display_name` varchar(50) DEFAULT NULL,
+  `first_name` varchar(30) DEFAULT NULL,
+  `last_name` varchar(30) DEFAULT NULL,
   `date_of_birth` date DEFAULT NULL,
-  `users_gender` int(1) NOT NULL,
-  `users_role` int(1) NOT NULL,
-  `status` int(1) NOT NULL,
+  `users_gender` int(1) DEFAULT NULL,
+  `users_role` int(1) NOT NULL DEFAULT 0,
+  `status` int(1) DEFAULT NULL,
   `users_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `users_updated_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -383,7 +387,7 @@ ALTER TABLE `users1`
 -- AUTO_INCREMENT untuk tabel `detailhistory`
 --
 ALTER TABLE `detailhistory`
-  MODIFY `detailhistory_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `detailhistory_id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
 -- AUTO_INCREMENT untuk tabel `product`
@@ -395,7 +399,7 @@ ALTER TABLE `product`
 -- AUTO_INCREMENT untuk tabel `promocode`
 --
 ALTER TABLE `promocode`
-  MODIFY `promocode_id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `promocode_id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT untuk tabel `users1`
